@@ -31,24 +31,25 @@ const checkJwt = jwt({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
+    jwksUri: `https://${process.env.REACT_APP_AUTH0_DOMAIN}/.well-known/jwks.json`
   }),
 
   // Validate the audience and the issuer.
-  audience: process.env.AUTH0_CLIENT_ID,
-  issuer: `https://${process.env.AUTH0_DOMAIN}/`,
+  audience: process.env.AUTH0_AUDIENCE,
+  issuer: `https://${process.env.REACT_APP_AUTH0_DOMAIN}/`,
   algorithms: ['RS256']
 });
 
 app.use(checkJwt);
 
 // retrieve all grades
-app.get('/', (req, res) => {
+app.get('/api/', (req, res) => {
+  console.log(req.user.permissions);
   res.send(grades);
 });
 
 // insert a new grade
-app.post('/', (req, res) => {
+app.post('/api/', (req, res) => {
   const {userId, grade} = req.body;
   const newGrade = {
     id: uuidv4(),
